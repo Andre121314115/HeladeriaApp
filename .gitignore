@@ -1,0 +1,28 @@
+# Gradle
+.gradle/
+**/build/
+!gradle-wrapper.jar
+
+# Local config
+local.properties
+.idea/
+*.iml
+
+# Android Studio captures
+captures/
+
+# Keystore files
+*.jks
+*.keystore
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build outputs
+*.apk
+*.ap_
+*.aab
+
+# Kotlin
+*.kotlin_module
