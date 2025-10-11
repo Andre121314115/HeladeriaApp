@@ -2,9 +2,8 @@ package com.example.heladeria.ui.screens
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -104,7 +103,6 @@ fun HomeScreen(
                 )
             )
         },
-
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
         Surface(
@@ -122,17 +120,20 @@ fun HomeScreen(
                     Text("Cargando sabores...", color = Color(0xFF6AD3D3))
                 }
             } else {
-                LazyVerticalGrid(
-                    columns = GridCells.Adaptive(minSize = 170.dp),
+                // ✅ Cambiado a lista vertical (uno debajo del otro)
+                LazyColumn(
                     modifier = Modifier
-                        .padding(8.dp)
+                        .padding(12.dp)
                         .fillMaxSize(),
-                    contentPadding = PaddingValues(8.dp),
-                    verticalArrangement = Arrangement.spacedBy(12.dp),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                    verticalArrangement = Arrangement.spacedBy(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    items(items = uiState.products) { product ->
-                        ProductCard(product = product, onAddToCart = onAddToCart)
+                    items(uiState.products) { product ->
+                        ProductCard(
+                            product = product,
+                            onAddToCart = onAddToCart,
+                            modifier = Modifier.fillMaxWidth(0.9f) // centrado y ancho ajustado
+                        )
                     }
                 }
             }
