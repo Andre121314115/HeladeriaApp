@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.ShoppingCart
@@ -13,10 +14,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import com.example.heladeria.data.model.Product
 import com.example.heladeria.ui.components.ProductCard
@@ -41,17 +45,17 @@ fun HomeScreen(
         topBar = {
             CenterAlignedTopAppBar(
                 title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            imageVector = Icons.Default.Person,
-                            contentDescription = "Helado",
-                            tint = Color(0xFF6AD3D3)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
                         Text(
-                            "Heladería Delicia",
+                            "🍦 Heladería Delicia 🍧",
                             color = Color(0xFF3B3B3B),
-                            fontWeight = FontWeight.Bold
+                            fontWeight = FontWeight.ExtraBold,
+                            fontSize = 20.sp
+                        )
+                        Text(
+                            "¡Disfruta de nuestros sabores artesanales!",
+                            fontSize = 13.sp,
+                            color = Color(0xFF7C7C7C)
                         )
                     }
                 },
@@ -61,14 +65,14 @@ fun HomeScreen(
                             Icon(
                                 imageVector = Icons.Default.Person,
                                 contentDescription = "Perfil",
-                                tint = Color(0xFF6AD3D3)
+                                tint = Color(0xFF4DD0E1)
                             )
                         }
                     } else {
                         TextButton(onClick = { navController.navigate(Routes.LOGIN) }) {
                             Text(
                                 "Iniciar sesión",
-                                color = Color(0xFF6AD3D3),
+                                color = Color(0xFF4DD0E1),
                                 fontWeight = FontWeight.SemiBold
                             )
                         }
@@ -79,61 +83,89 @@ fun HomeScreen(
                             navController.navigate(Routes.CART)
                         } else {
                             scope.launch {
-                                snackbarHostState.showSnackbar("Inicia sesión para ver tu carrito 🍦")
+                                snackbarHostState.showSnackbar("Inicia sesión para ver tu carrito 🍨")
                             }
                         }
                     }) {
                         BadgedBox(badge = {
                             if (cartCount > 0) {
-                                Badge(
-                                    containerColor = Color(0xFFFA9E8C)
-                                ) { Text("$cartCount") }
+                                Badge(containerColor = Color(0xFFFF8A65)) {
+                                    Text("$cartCount")
+                                }
                             }
                         }) {
                             Icon(
                                 imageVector = Icons.Default.ShoppingCart,
                                 contentDescription = "Carrito",
-                                tint = Color(0xFF6AD3D3)
+                                tint = Color(0xFF4DD0E1)
                             )
                         }
                     }
                 },
                 colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
-                    containerColor = Color(0xFFFFFBF6)
+                    containerColor = Color(0xFFFFF8F2)
                 )
             )
         },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { padding ->
-        Surface(
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(padding)
                 .background(
                     brush = Brush.verticalGradient(
-                        listOf(Color(0xFFFFFBF6), Color(0xFFE0F7FA))
+                        listOf(Color(0xFFFFF8F2), Color(0xFFE0F7FA))
                     )
                 )
+                .padding(padding)
         ) {
-            if (uiState.isLoading) {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text("Cargando sabores...", color = Color(0xFF6AD3D3))
-                }
-            } else {
-                // ✅ Cambiado a lista vertical (uno debajo del otro)
-                LazyColumn(
+            Column(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(horizontal = 16.dp)
+            ) {
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Nuestros sabores destacados 🍨",
+                    color = Color(0xFF3B3B3B),
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 18.sp,
                     modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(16.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    items(uiState.products) { product ->
-                        ProductCard(
-                            product = product,
-                            onAddToCart = onAddToCart,
-                            modifier = Modifier.fillMaxWidth(0.9f) // centrado y ancho ajustado
+                        .align(Alignment.Start)
+                        .padding(bottom = 8.dp)
+                )
+
+                if (uiState.isLoading) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        CircularProgressIndicator(color = Color(0xFF4DD0E1))
+                    }
+                } else if (uiState.products.isEmpty()) {
+                    Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                        Text(
+                            "No hay productos disponibles 😢",
+                            textAlign = TextAlign.Center,
+                            color = Color(0xFF7C7C7C)
                         )
+                    }
+                } else {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize(),
+                        verticalArrangement = Arrangement.spacedBy(16.dp),
+                        contentPadding = PaddingValues(bottom = 80.dp)
+                    ) {
+                        items(uiState.products) { product ->
+                            ProductCard(
+                                product = product,
+                                onAddToCart = onAddToCart,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .shadow(3.dp, RoundedCornerShape(16.dp))
+                                    .background(
+                                        color = Color.White,
+                                        shape = RoundedCornerShape(16.dp)
+                                    )
+                            )
+                        }
                     }
                 }
             }

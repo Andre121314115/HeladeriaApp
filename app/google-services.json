@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "589387174995",
-    "project_id": "panaderia-2f5c3",
-    "storage_bucket": "panaderia-2f5c3.firebasestorage.app"
+    "project_number": "279226453531",
+    "project_id": "heladeria-delicia",
+    "storage_bucket": "heladeria-delicia.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:589387174995:android:77cd1af8ab7206c9fb22a6",
+        "mobilesdk_app_id": "1:279226453531:android:a61adffa1b76b07c44f2be",
         "android_client_info": {
-          "package_name": "com.example.panaderia"
+          "package_name": "com.example.heladeria"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDS9aGKhgKrnoOUjMLR9W6F0ojEKFcLGUk"
+          "current_key": "AIzaSyDT9yaywJL8q6CY14xo0cnBoF8UV6NGh-o"
         }
       ],
       "services": {

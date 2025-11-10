@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.example.heladeria.data.repository.AuthRepository
 import com.example.heladeria.data.repository.SharedPrefAuthRepository
-import com.example.heladeria.data.repository.FakeProductRepository
+import com.example.heladeria.data.repository.FirebaseProductRepository
 import com.example.heladeria.data.repository.ProductRepository
 import dagger.Binds
 import dagger.Module
@@ -20,7 +20,7 @@ abstract class AppModule {
 
     @Binds
     @Singleton
-    abstract fun bindProductRepository(impl: FakeProductRepository): ProductRepository
+    abstract fun bindProductRepository(impl: FirebaseProductRepository): ProductRepository
 
     @Binds
     @Singleton
