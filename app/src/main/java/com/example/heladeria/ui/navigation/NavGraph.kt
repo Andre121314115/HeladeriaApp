@@ -34,8 +34,6 @@ object Routes {
 @Composable
 fun HeladeriaNavGraph() {
     val navController = rememberNavController()
-
-    // ViewModels principales (persisten entre pantallas)
     val authVm: AuthViewModel = hiltViewModel()
     val cartVm: CartViewModel = hiltViewModel()
     val orderVm: OrderViewModel = hiltViewModel()
@@ -64,10 +62,12 @@ fun HeladeriaNavGraph() {
 
             HomeScreen(
                 uiState = uiState,
-                onAddToCart = { product -> homeVm.addToCart(product) },
+                onAddToCart = { product -> cartVm.addProduct(product) },
                 navController = navController,
                 authState = authState,
-                cartCount = cartCount
+                cartCount = cartCount,
+                onProductSelected = homeVm::onProductSelected,
+                onDismissProductDetails = homeVm::onDismissProductDetails
             )
         }
 

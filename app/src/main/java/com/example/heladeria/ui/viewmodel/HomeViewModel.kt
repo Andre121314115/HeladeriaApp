@@ -1,5 +1,6 @@
 package com.example.heladeria.ui.viewmodel
 
+import androidx.compose.animation.core.copy
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.heladeria.data.model.Product
@@ -8,14 +9,16 @@ import com.example.heladeria.data.repository.CartRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 data class HomeUiState(
     val isLoading: Boolean = true,
     val products: List<Product> = emptyList(),
-    val cart: Map<Int, Int> = emptyMap() // todavía por compatibilidad, pero ya usamos CartRepository
-) {
+    val cart: Map<Int, Int> = emptyMap(),
+    val selectedProduct: Product? = null
+    ) {
     val cartCount: Int get() = cart.values.sum()
 }
 
@@ -38,11 +41,15 @@ class HomeViewModel @Inject constructor(
             _uiState.value = _uiState.value.copy(isLoading = false, products = prods)
         }
     }
-
-    // now delegate to cartRepo
     fun addToCart(product: Product) {
         cartRepo.addProduct(product)
-        // Optionally update local cart snapshot (if you rely on HomeUiState.cart)
-        // compute cart map from repo (not necessary). For now leave as is.
+    }
+
+    fun onProductSelected(product: Product) {
+        _uiState.update { it.copy(selectedProduct = product) }
+    }
+
+    fun onDismissProductDetails() {
+        _uiState.update { it.copy(selectedProduct = null) }
     }
 }

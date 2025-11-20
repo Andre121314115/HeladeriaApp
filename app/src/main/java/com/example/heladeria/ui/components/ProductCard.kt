@@ -1,6 +1,6 @@
 package com.example.heladeria.ui.components
 
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
@@ -8,7 +8,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -24,118 +23,82 @@ import com.example.heladeria.data.model.Product
 @Composable
 fun ProductCard(
     product: Product,
+    onProductClick: (Product) -> Unit,
     onAddToCart: (Product) -> Unit,
     modifier: Modifier = Modifier
 ) {
     Card(
         modifier = modifier
             .padding(8.dp)
-            .widthIn(min = 170.dp)
-            .heightIn(min = 230.dp),
+            .clickable { onProductClick(product) },
         shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xFFFFFBFE)
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        elevation = CardDefaults.cardElevation(defaultElevation = 6.dp)
     ) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(10.dp)
+            modifier = Modifier.padding(12.dp)
         ) {
-            // Imagen superior
-            Box(
+            // Imagen del producto (usando solo imageUrl)
+            AsyncImage(
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(product.imageUrl)
+                    .crossfade(true)
+                    .build(),
+                contentDescription = product.name,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(120.dp)
-                    .clip(RoundedCornerShape(14.dp)),
-                contentAlignment = Alignment.Center
-            ) {
-                if (product.imageRes != null) {
-                    androidx.compose.foundation.Image(
-                        painter = painterResource(id = product.imageRes),
-                        contentDescription = product.name,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
-                } else {
-                    AsyncImage(
-                        model = ImageRequest.Builder(LocalContext.current)
-                            .data(product.imageUrl)
-                            .crossfade(true)
-                            .build(),
-                        contentDescription = product.name,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop,
-                        placeholder = painterResource(id = R.drawable.placeholder_image),
-                        error = painterResource(id = R.drawable.placeholder_image)
-                    )
-                }
+                    .height(130.dp)
+                    .clip(RoundedCornerShape(12.dp)),
+                contentScale = ContentScale.Crop,
+                placeholder = painterResource(id = R.drawable.placeholder_image),
+                error = painterResource(id = R.drawable.placeholder_image)
+            )
 
-                // Gradiente translúcido en la parte inferior
-                Box(
-                    modifier = Modifier
-                        .matchParentSize()
-                        .background(
-                            Brush.verticalGradient(
-                                listOf(Color.Transparent, Color(0xAAFFFFFF))
-                            )
-                        )
-                )
-            }
-
-            Spacer(modifier = Modifier.height(8.dp))
+            Spacer(modifier = Modifier.height(12.dp))
 
             // Nombre del producto
             Text(
                 text = product.name,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.titleMedium.copy(
-                    fontWeight = FontWeight.Bold,
-                    color = Color(0xFF6D4C41)
-                )
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold
             )
 
-            Spacer(modifier = Modifier.height(2.dp))
+            Spacer(modifier = Modifier.height(4.dp))
 
-            // Descripción
+            // Descripción corta
             Text(
                 text = product.description,
                 maxLines = 2,
                 overflow = TextOverflow.Ellipsis,
-                style = MaterialTheme.typography.bodySmall.copy(
-                    color = Color(0xFF7B6F72)
-                )
+                style = MaterialTheme.typography.bodySmall,
+                color = Color.Gray
             )
 
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.weight(1f)) // Empuja lo de abajo al fondo
 
-            // Precio y botón
+            // Fila para Precio y Botón
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.fillMaxWidth()
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
+                // Precio
                 Text(
                     text = "S/ ${"%.2f".format(product.price)}",
-                    style = MaterialTheme.typography.titleSmall.copy(
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF009688) // verde menta tipo helado
-                    )
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
                 )
-                Spacer(modifier = Modifier.weight(1f))
+
+                // Botón para añadir al carrito
                 Button(
                     onClick = { onAddToCart(product) },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF80DEEA) // celeste pastel
-                    ),
-                    shape = RoundedCornerShape(50)
+                    shape = RoundedCornerShape(50),
+                    contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp)
                 ) {
-                    Text(
-                        "Pedir 🍨",
-                        color = Color.White,
-                        style = MaterialTheme.typography.labelLarge
-                    )
+                    Text("Pedir")
                 }
             }
         }
